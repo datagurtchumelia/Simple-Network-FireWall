@@ -13,6 +13,7 @@ HOST = '127.0.0.1' #Host IP
 PORT = 22 #Port
 ALLOWED_HOSTS = []
 ALLOWED_PORTS = []
+BLACKLISTED_HOST = []
 BLACKLISTED_IPS = []
 
 with open('blacklist.txt', 'r') as file:
