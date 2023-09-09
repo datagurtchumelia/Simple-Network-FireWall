@@ -11,9 +11,14 @@ from bettercap.core import sniffer
 
 HOST = '127.0.0.1' #Host IP
 PORT = 22 #Port
-
 ALLOWED_HOSTS = []
 ALLOWED_PORTS = []
+BLACKLISTED_IPS = []
+
+with open('blacklist.txt', 'r') as file:
+    for line in file:
+        ip = line.strip()  
+        BLACKLISTED_IPS.append(ip)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.setblocking(0)
@@ -141,6 +146,12 @@ def idps_handler(conn, addr):
         conn (socket.socket): The client connection socket.
         addr (tuple): The client address (IP, port).
     """
+    if addr[0] in BLACKLISTED_IPS:
+        print(f"Blocked connection from blacklisted IP: {addr[0]}")
+        conn.close()
+        inputs.remove(conn)
+        return
+
     request = get_request_data(conn, 4096)
 
     if contains_worm(request):
